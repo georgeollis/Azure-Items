@@ -1,0 +1,130 @@
+targetScope = 'managementGroup'
+
+resource policy 'Microsoft.Authorization/policyDefinitions@2021-06-01' = {
+  name: 'dine-azuresql-administrator-group-user'
+  properties: {
+    displayName: 'Deploy the correct administrator group or user for Azure SQL'
+    description: 'This policy will deploy the default Azure SQL Administrator user or group from Azure Active Directory.'
+    metadata: {
+      category: 'Custom'
+    }
+    parameters: {
+      login: {
+        type: 'String'
+      }
+      sid: {
+        type: 'String'
+      }
+      tenantId: {
+        type: 'String'
+      }
+    }
+    policyRule: {
+      if: {
+        allOf: [
+          {
+            field: 'type'
+            equals: 'Microsoft.Sql/servers'
+          }
+        ]
+      }
+      then: {
+        effect: 'deployIfNotExists'
+        details: {
+          type: 'Microsoft.Sql/servers/administrators'
+          existenceCondition: {
+            allOf: [
+              {
+                field: 'Microsoft.Sql/servers/administrators/administratorType'
+                equals: 'ActiveDirectory'
+              }
+              {
+                field: 'Microsoft.Sql/servers/administrators/login'
+                equals: '[parameters(\'login\')]'
+              }
+              {
+                field: 'Microsoft.Sql/servers/administrators/sid'
+                equals: '[parameters(\'sid\')]'
+              }
+              {
+                field: 'Microsoft.Sql/servers/administrators/tenantId'
+                equals: '[parameters(\'tenantId\')]'
+              }
+            ]
+          }
+          deployment: {
+            properties: {
+              mode: 'incremental'
+              template: {
+                '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+                contentVersion: '1.0.0'
+                parameters: {
+                  location: {
+                    type: 'string'
+                  }
+                  sqlServerName: {
+                    type: 'string'
+                  }
+                  login: {
+                    type: 'string'
+                  }
+                  sid: {
+                    type: 'string'
+                  }
+                  tenantId: {
+                    type: 'string'
+                  }
+                }
+                variables: {}
+                resources: [
+                  {
+                    name: '[parameters(\'sqlServerName\')]'
+                    type: 'Microsoft.Sql/servers'
+                    apiVersion: '2019-06-01-preview'
+                    location: '[parameters(\'location\')]'
+                    resources: [
+                      {
+                        type: 'Microsoft.Sql/servers/administrators'
+                        apiVersion: '2019-06-01-preview'
+                        name: '[concat(parameters(\'sqlServerName\'),\'/ActiveDirectory\')]'
+                        dependsOn: [
+                          '[resourceId(\'Microsoft.Sql/servers\',  parameters(\'sqlServerName\')) ]'
+                        ]
+                        properties: {
+                          administratorType: 'ActiveDirectory'
+                          login: '[parameters(\'login\')]'
+                          sid: '[parameters(\'sid\')]'
+                          tenantId: '[parameters(\'tenantId\')]'
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+              parameters: {
+                sqlServerName: {
+                  value: '[field(\'Name\')]'
+                }
+                location: {
+                  value: '[field(\'Location\')]'
+                }
+                login: {
+                  value: '[parameters(\'login\')]'
+                }
+                sid: {
+                  value: '[parameters(\'sid\')]'
+                }
+                tenantId: {
+                  value: '[parameters(\'tenantId\')]'
+                }
+              }
+            }
+          }
+          roleDefinitionIds: [
+            '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+          ]
+        }
+      }
+    }
+  }
+}
