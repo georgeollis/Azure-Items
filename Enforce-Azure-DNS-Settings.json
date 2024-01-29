@@ -1,0 +1,119 @@
+{
+  "properties": {
+    "displayName": "This policy enforces specific DNS settings on a virtual network in Azure.",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "metadata": {
+      "createdBy": "13f94c0d-8a51-492a-928b-59392c23c1ac",
+      "createdOn": "2024-01-29T14:45:44.6262427Z",
+      "updatedBy": "13f94c0d-8a51-492a-928b-59392c23c1ac",
+      "updatedOn": "2024-01-29T15:30:01.098153Z"
+    },
+    "parameters": {
+      "dnsServers": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "DNS IP Addresses",
+          "description": "The list of DNS server IP addresses to enforce on the virtual network."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers",
+              "in": "[parameters('dnsServers')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+          "type": "Microsoft.Network/virtualNetworks",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers",
+                "in": "[parameters('dnsServers')]"
+              }
+            ]
+          },
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "dnsServers": {
+                    "type": "array"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "addressPrefixes": {
+                    "type": "array"
+                  }
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Network/virtualNetworks",
+                    "apiVersion": "2020-06-01",
+                    "name": "[parameters('name')]",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "addressSpace": {
+                        "addressPrefixes": "[parameters('addressPrefixes')]"
+                      },
+                      "dhcpOptions": {
+                        "dnsServers": "[parameters('dnsServers')]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "parameters": {
+                "dnsServers": {
+                  "value": "[parameters('dnsServers')]"
+                },
+                "name": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "addressPrefixes": {
+                  "value": "[field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes[*]')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "/providers/Microsoft.Management/managementGroups/3d529362-1414-442f-a6bd-94472c04c5ec/providers/Microsoft.Authorization/policyDefinitions/f7212feb-25da-4c77-89e6-da9ec706f922",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "f7212feb-25da-4c77-89e6-da9ec706f922",
+  "systemData": {
+    "createdBy": "GeorgeOllis@outlook.com",
+    "createdByType": "User",
+    "createdAt": "2024-01-29T14:45:44.5643413Z",
+    "lastModifiedBy": "GeorgeOllis@outlook.com",
+    "lastModifiedByType": "User",
+    "lastModifiedAt": "2024-01-29T15:30:01.0731227Z"
+  }
+}
