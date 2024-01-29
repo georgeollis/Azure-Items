@@ -1,0 +1,92 @@
+{
+  "mode": "Indexed",
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Network/virtualNetworks"
+        }
+      ]
+    },
+    "then": {
+      "effect": "deployIfNotExists",
+      "details": {
+        "type": "Microsoft.Network/virtualNetworks",
+        "existenceCondition": {
+          "allOf": [
+            {
+              "field": "Microsoft.Network/virtualNetworks/dhcpOptions.dnsServers",
+              "in": "[parameters('dnsServers')]"
+            }
+          ]
+        },
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        ],
+        "deployment": {
+          "properties": {
+            "mode": "incremental",
+            "template": {
+              "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+              "contentVersion": "1.0.0.0",
+              "parameters": {
+                "dnsServers": {
+                  "type": "array"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "addressPrefixes": {
+                  "type": "array"
+                }
+              },
+              "resources": [
+                {
+                  "type": "Microsoft.Network/virtualNetworks",
+                  "apiVersion": "2020-06-01",
+                  "name": "[parameters('name')]",
+                  "location": "[parameters('location')]",
+                  "properties": {
+                    "addressSpace": {
+                      "addressPrefixes": "[parameters('addressPrefixes')]"
+                    },
+                    "dhcpOptions": {
+                      "dnsServers": "[parameters('dnsServers')]"
+                    }
+                  }
+                }
+              ]
+            },
+            "parameters": {
+              "dnsServers": {
+                "value": "[parameters('dnsServers')]"
+              },
+              "name": {
+                "value": "[field('name')]"
+              },
+              "location": {
+                "value": "[field('location')]"
+              },
+              "addressPrefixes": {
+                "value": "[field('Microsoft.Network/virtualNetworks/addressSpace.addressPrefixes[*]')]"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "dnsServers": {
+      "type": "Array",
+      "metadata": {
+        "displayName": "DNS IP Addresses",
+        "description": "The list of DNS server IP addresses to enforce on the virtual network."
+      }
+    }
+  }
+}
