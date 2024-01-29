@@ -104,16 +104,5 @@
         }
       }
     }
-  },
-  "id": "/providers/Microsoft.Management/managementGroups/3d529362-1414-442f-a6bd-94472c04c5ec/providers/Microsoft.Authorization/policyDefinitions/f7212feb-25da-4c77-89e6-da9ec706f922",
-  "type": "Microsoft.Authorization/policyDefinitions",
-  "name": "f7212feb-25da-4c77-89e6-da9ec706f922",
-  "systemData": {
-    "createdBy": "GeorgeOllis@outlook.com",
-    "createdByType": "User",
-    "createdAt": "2024-01-29T14:45:44.5643413Z",
-    "lastModifiedBy": "GeorgeOllis@outlook.com",
-    "lastModifiedByType": "User",
-    "lastModifiedAt": "2024-01-29T15:30:01.0731227Z"
   }
 }
