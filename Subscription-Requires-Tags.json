@@ -1,0 +1,46 @@
+{
+  "mode": "All",
+  "parameters": {
+    "tagValue": {
+      "type": "String",
+      "metadata": {
+        "displayName": "The tag value",
+        "description": "The tag value to set on the subscription."
+      }
+      "defaultValue": "update"
+    },
+    "tagName": {
+      "type": "String",
+      "defaultValue": "environment"
+    }
+  }
+  "policyRule": {
+    "if": {
+      "allOf": [
+        {
+          "field": "tags[parameters('tagName')]",
+          "exists": "false"
+        },
+        {
+          "field": "type",
+          "equals": "Microsoft.Resources/subscriptions"
+        }
+      ]
+    },
+    "then": {
+      "effect": "modify",
+      "details": {
+        "roleDefinitionIds": [
+          "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+        ],
+        "operations": [
+          {
+            "operation": "add",
+            "field": "tags[parameters('tagName')]",
+            "value": "[parameters('tagValue')]"
+          }
+        ]
+      }
+    }
+  }
+}
