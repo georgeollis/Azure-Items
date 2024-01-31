@@ -1,0 +1,47 @@
+{
+    "properties": {
+      "displayName": "Inherit a tag from the subscription to Resource Group",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "Adds or replaces the specified tag and value from the containing subscription when any resource group is created or updated. Existing resource groups can be remediated by triggering a remediation task.",
+      "parameters": {
+        "tagName": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "[concat('tags[', parameters('tagName'), ']')]",
+              "notEquals": "[subscription().tags[parameters('tagName')]]"
+            },
+            {
+              "value": "[subscription().tags[parameters('tagName')]]",
+              "notEquals": ""
+            }
+          ]
+        },
+        "then": {
+          "effect": "modify",
+          "details": {
+            "roleDefinitionIds": [
+              "/providers/microsoft.authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f"
+            ],
+            "operations": [
+              {
+                "operation": "addOrReplace",
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "value": "[subscription().tags[parameters('tagName')]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+  
