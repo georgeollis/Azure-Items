@@ -33,7 +33,7 @@
         ],
         "operations": [
           {
-            "operation": "add",
+            "operation": "addOrReplace",
             "field": "tags[parameters('tagName')]",
             "value": "[parameters('tagValue')]"
           }
