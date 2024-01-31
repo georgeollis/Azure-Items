@@ -1,0 +1,35 @@
+{
+    "mode": "All",
+    "policyRule": {
+      "if": {
+        "field": "tags['Environment']",
+        "exists": "false"
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "add",
+              "field": "tags['Environment']",
+              "value": "[parameters('Environment')]"
+            }
+          ]
+        }
+      }
+    },
+    "parameters": {
+      "Environment": {
+        "type": "String",
+        "allowedValues": ["pr", "np", "update"],
+        "metadata": {
+          "description": "The environment tag to set on the subscription."
+        }
+      }
+    },
+    "description": "Adds a tag named 'Environment' with a value from the allowed values to a subscription if it doesn't exist."
+  }
+  
