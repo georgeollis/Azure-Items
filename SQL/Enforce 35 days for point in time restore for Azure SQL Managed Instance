@@ -1,0 +1,77 @@
+{
+  "properties": {
+    "displayName": "Enforce 35 days for point in time restore for Azure SQL Managed Instance",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "This policy enforces a 35-day point-in-time restore setting for Azure SQL Managed Instances.",
+    "metadata": {
+      "createdBy": "dca992bf-daf4-4d40-8668-915e49682afa",
+      "createdOn": "2024-02-22T23:32:23.5893735Z",
+      "updatedBy": null,
+      "updatedOn": null
+    },
+    "parameters": {},
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Sql/managedInstances/databases"
+      },
+      "then": {
+        "effect": "deployIfNotExists",
+        "details": {
+          "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+          "existenceCondition": {
+            "field": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies/retentionDays",
+            "equals": 35
+          },
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "fullName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Specify the SQL Managed Instance name"
+                    }
+                  }
+                },
+                "resources": [
+                  {
+                    "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+                    "apiVersion": "2020-02-02-preview",
+                    "name": "[concat(parameters('fullName'), '/default')]",
+                    "properties": {
+                      "retentionDays": 35
+                    }
+                  }
+                ]
+              },
+              "parameters": {
+                "fullName": {
+                  "value": "[field('fullName')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "id": "/providers/Microsoft.Management/managementGroups/TraversSmithRoot/providers/Microsoft.Authorization/policyDefinitions/2a1bb6ae-80f3-456c-9a37-9df7a5384cbb",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "2a1bb6ae-80f3-456c-9a37-9df7a5384cbb",
+  "systemData": {
+    "createdBy": "george.ollis@clouddirect.net",
+    "createdByType": "User",
+    "createdAt": "2024-02-22T23:32:23.5723316Z",
+    "lastModifiedBy": "george.ollis@clouddirect.net",
+    "lastModifiedByType": "User",
+    "lastModifiedAt": "2024-02-22T23:32:23.5723316Z"
+  }
+}
