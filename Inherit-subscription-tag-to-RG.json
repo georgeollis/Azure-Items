@@ -1,0 +1,54 @@
+{
+  "properties": {
+    "displayName": "Inherit tag from subscription to resource groups",
+    "policyType": "Custom",
+    "mode": "All",
+    "description": "If the tag is set at the subscription, all resource groups within the subscription will inherit the tag. This is useful when defining standard tags at the subscription that need to be applied to all resource groups. For example, the subscription may have an environment tag set, or the subscription may be deployed as part of ALZ best practices for the one-single workload.",
+    "version": "1.0.0",
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "Name of the tag, such as 'environment'"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "notEquals": "[subscription().tags[parameters('tagName')]]"
+          },
+          {
+            "value": "[subscription().tags[parameters('tagName')]]",
+            "notEquals": ""
+          }
+        ]
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f"
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "[concat('tags[', parameters('tagName'), ']')]",
+              "value": "[subscription().tags[parameters('tagName')]]"
+            }
+          ]
+        }
+      }
+    },
+    "versions": [
+      "1.0.0"
+    ]
+  }
+}
