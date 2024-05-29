@@ -1,14 +1,9 @@
 {
   "properties": {
-    "displayName": "testrg",
+    "displayName": "Inherit tag from subscription to all resources",
+    "description": "If the tag is set at the subscription, all resources within the subscription will inherit the tag. This is useful when defining standard tags at the subscription that need to be applied to all resources. For example, the subscription may have an environment tag set, or the subscription may be deployed as part of ALZ best practices for the one-single workload. This policy does not inherit tags for resource groups.",
     "policyType": "Custom",
     "mode": "Indexed",
-    "metadata": {
-      "createdBy": "13f94c0d-8a51-492a-928b-59392c23c1ac",
-      "createdOn": "2024-05-29T10:24:51.9558941Z",
-      "updatedBy": null,
-      "updatedOn": null
-    },
     "version": "1.0.0",
     "parameters": {
       "tagName": {
