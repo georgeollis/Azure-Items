@@ -1,0 +1,9 @@
+arg("").resourcecontainers
+| where ["type"] == "microsoft.resources/subscriptions"
+| join (
+    find where TimeGenerated > ago(30d) project _BilledSize, _IsBillable, _SubscriptionId
+| where _IsBillable == true 
+| summarize BillableDataBytes = sum(_BilledSize) by _SubscriptionId 
+| sort by BillableDataBytes nulls last
+) on $left.subscriptionId == $right._SubscriptionId
+| project name, subscriptionId, format_bytes(BillableDataBytes), tags
