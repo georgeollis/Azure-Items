@@ -111,7 +111,7 @@
                         "authentication": {
                           "managedIdentity": {
                             "identifier-name": "mi_res_id",
-                            "identifier-value": "[parameters('userAssignedManagedIdentity')]"
+                            "identifier-value": "[parameters('userAssignedIdentityResourceId')]"
                           }
                         }
                       }
