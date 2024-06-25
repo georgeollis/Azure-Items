@@ -28,8 +28,7 @@
           "metadata": {
             "displayName": "User-Assigned Managed Identity Resource ID",
             "description": "The resource ID of the pre-created user-assigned managed identity."
-          },
-          "defaultValue": ""
+          }
         }
       },
       "policyRule": {
