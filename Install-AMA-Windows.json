@@ -20,8 +20,7 @@
         "allowedValues": [
           "DeployIfNotExists",
           "Disabled"
-        ],
-        "defaultValue": "DeployIfNotExists"
+        ]
       },
       "userAssignedIdentityResourceId": {
         "type": "String",
