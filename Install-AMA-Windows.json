@@ -41,6 +41,10 @@
             {
                 "field": "Microsoft.Compute/virtualMachines/storageProfile.osDisk.osType",
                 "like": "Windows*"
+            },
+            {
+                "field": "tags['NoAMA']",
+                "notEquals": "true"
             }
           ]
         },
