@@ -1,0 +1,57 @@
+{
+    "properties": {
+        "immutableId": "dcr-a10431ae65fa408eb59d74feeba32423",
+        "dataSources": {
+            "windowsEventLogs": [
+                {
+                    "streams": [
+                        "Microsoft-SecurityEvent"
+                    ],
+                    "xPathQueries": [
+                        "Security!*",
+                        "Microsoft-Windows-AppLocker/EXE and DLL!*",
+                        "Microsoft-Windows-AppLocker/MSI and Script!*"
+                    ],
+                    "name": "eventLogsDataSource"
+                }
+            ]
+        },
+        "destinations": {
+            "logAnalytics": [
+                {
+                    "workspaceResourceId": "/subscriptions/baba41cf-c01d-4a55-b6c5-ca494b802be5/resourcegroups/0102vm_group/providers/microsoft.operationalinsights/workspaces/dasasdasdassdaads",
+                    "workspaceId": "8cdc465e-69aa-4e60-85ec-20cf4642e628",
+                    "name": "DataCollectionEvent"
+                }
+            ]
+        },
+        "dataFlows": [
+            {
+                "streams": [
+                    "Microsoft-SecurityEvent"
+                ],
+                "destinations": [
+                    "DataCollectionEvent"
+                ]
+            }
+        ],
+        "provisioningState": "Succeeded"
+    },
+    "location": "uksouth",
+    "tags": {
+        "Environment": "prd"
+    },
+    "kind": "Windows",
+    "id": "/subscriptions/baba41cf-c01d-4a55-b6c5-ca494b802be5/resourceGroups/0102vm_group/providers/Microsoft.Insights/dataCollectionRules/test01",
+    "name": "test01",
+    "type": "Microsoft.Insights/dataCollectionRules",
+    "etag": "\"a000c308-0000-1100-0000-666722860000\"",
+    "systemData": {
+        "createdBy": "GeorgeOllis@outlook.com",
+        "createdByType": "User",
+        "createdAt": "2024-06-10T15:57:57.0441933Z",
+        "lastModifiedBy": "GeorgeOllis@outlook.com",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2024-06-10T15:57:57.0441933Z"
+    }
+}
