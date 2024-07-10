@@ -1,0 +1,30 @@
+{
+    "mode": "All",
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "The tag name",
+          "description": "The tag name that must be set on the subscription."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "tags[parameters('tagName')]",
+            "exists": "false"
+          },
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+  
