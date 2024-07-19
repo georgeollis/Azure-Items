@@ -10,3 +10,16 @@ lastUpdateTime = todatetime(tolong(properties.LastUpdateTime)),
 impactMitigationTime = todatetime(tolong(properties.ImpactMitigationTime)),
 impactStartTime = todatetime(tolong(properties.ImpactStartTime))
 
+servicehealthresources
+| where tostring(properties.EventSubType) == "Retirement"
+| project service = tostring(properties.Impact[0].ImpactedService), 
+trackingId=name, 
+type = tostring(properties.EventSubType),
+title = tostring(properties.Title),
+status = tostring(properties.Status),
+subscriptionId = tostring(properties.SubscriptionId),
+lastUpdateTime = todatetime(tolong(properties.LastUpdateTime)),
+impactMitigationTime = todatetime(tolong(properties.ImpactMitigationTime)),
+impactStartTime = todatetime(tolong(properties.ImpactStartTime))
+| summarize by ['title'], service, impactMitigationTime
+| sort by service
