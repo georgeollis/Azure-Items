@@ -1,0 +1,11 @@
+authorizationresources
+| where type == "microsoft.authorization/roleassignments"
+| where properties.principalId == "TO_FILL_WITH_OBJECT_ID"
+| extend roleDefinitionId = tostring(properties.roleDefinitionId)
+| join kind=inner (
+    authorizationresources
+    | where type == "microsoft.authorization/roledefinitions"
+    | project roleDefinitionId = id, roleName = tostring(properties.roleName)
+) on roleDefinitionId
+| project principalId = properties.principalId, roleDefinitionId, roleName, scope = tostring(properties.scope)
+| summarize count() by roleName, scope
