@@ -1,0 +1,65 @@
+{
+	"properties": {
+		"roleName": "Foundry Dev",
+		"description": "Foundry Dev",
+		"assignableScopes": [
+		],
+		"permissions": [
+			{
+				"actions": [
+					"Microsoft.CognitiveServices/*/read",
+					"Microsoft.MachineLearningServices/workspaces/*/read",
+					"Microsoft.MachineLearningServices/workspaces/*/action",
+					"Microsoft.MachineLearningServices/workspaces/*/delete",
+					"Microsoft.MachineLearningServices/workspaces/*/write",
+					"Microsoft.MachineLearningServices/locations/*/read",
+					"Microsoft.Authorization/*/read",
+					"Microsoft.Insights/alertRules/*",
+					"Microsoft.Insights/components/*",
+					"Microsoft.Insights/diagnosticSettings/*",
+					"Microsoft.Insights/generateLiveToken/read",
+					"Microsoft.Insights/logDefinitions/read",
+					"Microsoft.Insights/metricAlerts/*",
+					"Microsoft.Insights/metricdefinitions/read",
+					"Microsoft.Insights/metrics/read",
+					"Microsoft.Insights/scheduledqueryrules/*",
+					"Microsoft.Insights/topology/read",
+					"Microsoft.Insights/transactions/read",
+					"Microsoft.Insights/webtests/read",
+					"Microsoft.Resources/deployments/*",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/delete",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/read",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/write"
+				],
+				"notActions": [
+					"Microsoft.MachineLearningServices/workspaces/delete",
+					"Microsoft.MachineLearningServices/workspaces/write",
+					"Microsoft.MachineLearningServices/workspaces/listKeys/action",
+					"Microsoft.MachineLearningServices/workspaces/hubs/write",
+					"Microsoft.MachineLearningServices/workspaces/onlineEndpoints/write",
+					"Microsoft.MachineLearningServices/workspaces/hubs/delete",
+					"Microsoft.MachineLearningServices/workspaces/featurestores/write",
+					"Microsoft.MachineLearningServices/workspaces/featurestores/delete",
+					"Microsoft.MachineLearningServices/workspaces/evaluations/results/labels/read",
+					"Microsoft.MachineLearningServices/workspaces/evaluations/results/reasonings/read",
+					"Microsoft.MachineLearningServices/workspaces/simulations/results/images/read",
+					"Microsoft.MachineLearningServices/workspaces/connections/deployments/delete",
+					"Microsoft.MachineLearningServices/workspaces/connections/deployments/write",
+					"Microsoft.MachineLearningServices/workspaces/endpoints/write",
+					"Microsoft.MachineLearningServices/workspaces/endpoints/deployments/write"
+				],
+				"dataActions": [
+					"Microsoft.CognitiveServices/accounts/OpenAI/*",
+					"Microsoft.CognitiveServices/accounts/SpeechServices/*",
+					"Microsoft.CognitiveServices/accounts/ContentSafety/*",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action",
+					"Microsoft.Storage/storageAccounts/blobServices/containers/blobs/add/action",
+					"Microsoft.Search/searchServices/indexes/documents/*"
+				],
+				"notDataActions": []
+			}
+		]
+	}
+}
