@@ -1,0 +1,904 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vaults_daasdsadadadwa8984389635_name": {
+            "defaultValue": "daasdsadadadwa8984389635",
+            "type": "String"
+        },
+        "storageAccounts_daasdsadadadwa6960410864_name": {
+            "defaultValue": "daasdsadadadwa6960410864",
+            "type": "String"
+        },
+        "accounts_daasdsadadadwa6520965236_name": {
+            "defaultValue": "daasdsadadadwa6520965236",
+            "type": "String"
+        },
+        "workspaces_daasdsadadadwasdadw_name": {
+            "defaultValue": "daasdsadadadwasdadw",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "apiVersion": "2024-10-01",
+            "name": "[parameters('accounts_daasdsadadadwa6520965236_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "S0"
+            },
+            "kind": "AIServices",
+            "properties": {
+                "customSubDomainName": "[parameters('accounts_daasdsadadadwa6520965236_name')]",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2024-04-01-preview",
+            "name": "[parameters('vaults_daasdsadadadwa8984389635_name')]",
+            "location": "uksouth",
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "standard"
+                },
+                "tenantId": "3d529362-1414-442f-a6bd-94472c04c5ec",
+                "accessPolicies": [
+                    {
+                        "tenantId": "3d529362-1414-442f-a6bd-94472c04c5ec",
+                        "objectId": "51a0fdea-319f-4134-aa95-7df520c89762",
+                        "permissions": {
+                            "keys": [
+                                "all"
+                            ],
+                            "secrets": [
+                                "all"
+                            ],
+                            "certificates": [
+                                "all"
+                            ],
+                            "storage": []
+                        }
+                    }
+                ],
+                "enabledForDeployment": false,
+                "enableSoftDelete": true,
+                "vaultUri": "[concat('https://', parameters('vaults_daasdsadadadwa8984389635_name'), '.vault.azure.net/')]",
+                "provisioningState": "Succeeded",
+                "publicNetworkAccess": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2023-05-01",
+            "name": "[parameters('storageAccounts_daasdsadadadwa6960410864_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "isHnsEnabled": false,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts/defenderForAISettings",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('accounts_daasdsadadadwa6520965236_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_daasdsadadadwa6520965236_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('accounts_daasdsadadadwa6520965236_name'), '/Microsoft.Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_daasdsadadadwa6520965236_name'))]"
+            ],
+            "properties": {
+                "mode": "Blocking",
+                "contentFilters": [
+                    {
+                        "name": "Hate",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Hate",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Sexual",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Sexual",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Violence",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Violence",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Selfharm",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Selfharm",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('accounts_daasdsadadadwa6520965236_name'), '/Microsoft.DefaultV2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_daasdsadadadwa6520965236_name'))]"
+            ],
+            "properties": {
+                "mode": "Blocking",
+                "contentFilters": [
+                    {
+                        "name": "Hate",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Hate",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Sexual",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Sexual",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Violence",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Violence",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Selfharm",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Selfharm",
+                        "severityThreshold": "Medium",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Jailbreak",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Prompt"
+                    },
+                    {
+                        "name": "Protected Material Text",
+                        "blocking": true,
+                        "enabled": true,
+                        "source": "Completion"
+                    },
+                    {
+                        "name": "Protected Material Code",
+                        "blocking": false,
+                        "enabled": true,
+                        "source": "Completion"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/privateEndpointConnections",
+            "apiVersion": "2024-04-01-preview",
+            "name": "[concat(parameters('vaults_daasdsadadadwa8984389635_name'), '/plsc_vault.88633dc5-7e3c-4357-8f61-4e5c56368dbe')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-approved by Azure AI managed network for workspace: daasdsadadadwasdadw",
+                    "actionsRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_PE_', parameters('workspaces_daasdsadadadwasdadw_name'), '_amlworkspace_62399835')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "PrivateEndpoint",
+                "destination": {
+                    "serviceResourceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]",
+                    "subresourceTarget": "amlworkspace",
+                    "sparkEnabled": true,
+                    "sparkStatus": "Inactive"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureActiveDirectory_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureActiveDirectory",
+                    "protocol": "TCP",
+                    "portRanges": "80, 443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureFrontDoor.FirstParty')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureFrontDoor.FirstParty",
+                    "protocol": "*",
+                    "portRanges": "*",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureMachineLearning_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureMachineLearning",
+                    "protocol": "TCP",
+                    "portRanges": "443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureMachineLearning_UDP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureMachineLearning",
+                    "protocol": "UDP",
+                    "portRanges": "5831",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureMonitor_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureMonitor",
+                    "protocol": "TCP",
+                    "portRanges": "443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_AzureResourceManager_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "AzureResourceManager",
+                    "protocol": "TCP",
+                    "portRanges": "443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_BatchNodeManagement_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "BatchNodeManagement",
+                    "protocol": "TCP",
+                    "portRanges": "443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_MicrosoftContainerRegistry.uksouth_TCP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "MicrosoftContainerRegistry.uksouth",
+                    "protocol": "TCP",
+                    "portRanges": "443",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_ST_VirtualNetwork')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "type": "ServiceTag",
+                "destination": {
+                    "serviceTag": "VirtualNetwork",
+                    "protocol": "*",
+                    "portRanges": "*",
+                    "action": "Allow"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/privateEndpointConnections",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/', parameters('workspaces_daasdsadadadwasdadw_name'), '.908c06fd-f526-4522-b2f9-dcd125f0847e')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]"
+            ],
+            "properties": {
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-approved by Azure AI managed network for workspace: daasdsadadadwasdadw",
+                    "actionsRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": [
+                        {
+                            "allowedOrigins": [
+                                "https://mlworkspace.azure.ai",
+                                "https://ml.azure.com",
+                                "https://*.ml.azure.com",
+                                "https://ai.azure.com",
+                                "https://*.ai.azure.com"
+                            ],
+                            "allowedMethods": [
+                                "GET",
+                                "HEAD",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS",
+                                "POST",
+                                "PATCH"
+                            ],
+                            "maxAgeInSeconds": 1800,
+                            "exposedHeaders": [
+                                "*"
+                            ],
+                            "allowedHeaders": [
+                                "*"
+                            ]
+                        }
+                    ]
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": false
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": [
+                        {
+                            "allowedOrigins": [
+                                "https://mlworkspace.azure.ai",
+                                "https://ml.azure.com",
+                                "https://*.ml.azure.com",
+                                "https://ai.azure.com",
+                                "https://*.ai.azure.com"
+                            ],
+                            "allowedMethods": [
+                                "GET",
+                                "HEAD",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS",
+                                "POST"
+                            ],
+                            "maxAgeInSeconds": 1800,
+                            "exposedHeaders": [
+                                "*"
+                            ],
+                            "allowedHeaders": [
+                                "*"
+                            ]
+                        }
+                    ]
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/', parameters('storageAccounts_daasdsadadadwa6960410864_name'), '.171da70e-ccb9-4fe4-9b01-3e6762fc02f3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-approved by Azure AI managed network for workspace: daasdsadadadwasdadw",
+                    "actionRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/', parameters('storageAccounts_daasdsadadadwa6960410864_name'), '.b2573610-5b8d-4389-82fd-0f1606fc617c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-approved by Azure AI managed network for workspace: daasdsadadadwasdadw",
+                    "actionRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2023-05-01",
+            "name": "[concat(parameters('storageAccounts_daasdsadadadwa6960410864_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces",
+            "apiVersion": "2024-10-01",
+            "name": "[parameters('workspaces_daasdsadadadwasdadw_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]"
+            ],
+            "sku": {
+                "name": "Basic",
+                "tier": "Basic"
+            },
+            "kind": "Hub",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "friendlyName": "Daasdsadadadwasdadw",
+                "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]",
+                "hbiWorkspace": false,
+                "managedNetwork": {
+                    "isolationMode": "AllowOnlyApprovedOutbound",
+                    "outboundRules": {
+                        "__SYS_ST_BatchNodeManagement_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "BatchNodeManagement",
+                                "protocol": "TCP",
+                                "portRanges": "443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_PE_daasdsadadadwasdadw_amlworkspace_62399835": {
+                            "type": "PrivateEndpoint",
+                            "destination": {
+                                "serviceResourceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]",
+                                "subresourceTarget": "amlworkspace",
+                                "sparkEnabled": true,
+                                "sparkStatus": "Active"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureMachineLearning_UDP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureMachineLearning",
+                                "protocol": "UDP",
+                                "portRanges": "5831",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_MicrosoftContainerRegistry.uksouth_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "MicrosoftContainerRegistry.uksouth",
+                                "protocol": "TCP",
+                                "portRanges": "443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureActiveDirectory_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureActiveDirectory",
+                                "protocol": "TCP",
+                                "portRanges": "80, 443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_PE_daasdsadadadwa6960410864_file_62399835": {
+                            "type": "PrivateEndpoint",
+                            "destination": {
+                                "serviceResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                                "subresourceTarget": "file",
+                                "sparkEnabled": true,
+                                "sparkStatus": "Active"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureMonitor_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureMonitor",
+                                "protocol": "TCP",
+                                "portRanges": "443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureMachineLearning_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureMachineLearning",
+                                "protocol": "TCP",
+                                "portRanges": "443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_PE_daasdsadadadwa6960410864_blob_62399835": {
+                            "type": "PrivateEndpoint",
+                            "destination": {
+                                "serviceResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                                "subresourceTarget": "blob",
+                                "sparkEnabled": true,
+                                "sparkStatus": "Active"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureResourceManager_TCP": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureResourceManager",
+                                "protocol": "TCP",
+                                "portRanges": "443",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_PE_daasdsadadadwa8984389635_vault_62399835": {
+                            "type": "PrivateEndpoint",
+                            "destination": {
+                                "serviceResourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]",
+                                "subresourceTarget": "vault",
+                                "sparkEnabled": false,
+                                "sparkStatus": "Inactive"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_AzureFrontDoor.FirstParty": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "AzureFrontDoor.FirstParty",
+                                "protocol": "*",
+                                "portRanges": "*",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        },
+                        "__SYS_ST_VirtualNetwork": {
+                            "type": "ServiceTag",
+                            "destination": {
+                                "serviceTag": "VirtualNetwork",
+                                "protocol": "*",
+                                "portRanges": "*",
+                                "action": "Allow"
+                            },
+                            "status": "Active",
+                            "category": "Required"
+                        }
+                    },
+                    "status": {
+                        "status": "Active",
+                        "sparkReady": false
+                    },
+                    "firewallSku": "Standard"
+                },
+                "v1LegacyMode": false,
+                "publicNetworkAccess": "Disabled",
+                "discoveryUrl": "https://88633dc5-7e3c-4357-8f61-4e5c56368dbe.workspace.uksouth.api.azureml.ms/discovery/workspaces/88633dc5-7e3c-4357-8f61-4e5c56368dbe",
+                "workspaceHubConfig": {
+                    "defaultWorkspaceResourceGroup": "/subscriptions/baba41cf-c01d-4a55-b6c5-ca494b802be5/resourceGroups/12321321321"
+                },
+                "enableDataIsolation": true
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_PE_daasdsadadadwa6960410864_blob_62399835')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "type": "PrivateEndpoint",
+                "destination": {
+                    "serviceResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                    "subresourceTarget": "blob",
+                    "sparkEnabled": true,
+                    "sparkStatus": "Inactive"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_PE_daasdsadadadwa6960410864_file_62399835')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]"
+            ],
+            "properties": {
+                "type": "PrivateEndpoint",
+                "destination": {
+                    "serviceResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_daasdsadadadwa6960410864_name'))]",
+                    "subresourceTarget": "file",
+                    "sparkEnabled": true,
+                    "sparkStatus": "Inactive"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces/outboundRules",
+            "apiVersion": "2024-10-01",
+            "name": "[concat(parameters('workspaces_daasdsadadadwasdadw_name'), '/__SYS_PE_daasdsadadadwa8984389635_vault_62399835')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_daasdsadadadwasdadw_name'))]",
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]"
+            ],
+            "properties": {
+                "type": "PrivateEndpoint",
+                "destination": {
+                    "serviceResourceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_daasdsadadadwa8984389635_name'))]",
+                    "subresourceTarget": "vault",
+                    "sparkEnabled": false,
+                    "sparkStatus": "Inactive"
+                },
+                "status": "Active",
+                "category": "Required"
+            }
+        }
+    ]
+}
